@@ -1,0 +1,50 @@
+name: form-schema-provider
+
+image:
+  name: form-schema-provider
+  version: latest
+
+port: 8080
+
+appConfigMountPath: "/app/config"
+redisSecretsMountPath: "/app/secrets/redis"
+
+probes:
+  liveness:
+    path: /actuator/health/liveness
+  readiness:
+    path: /actuator/health/readiness
+
+monitoring:
+  namespace: openshift-monitoring
+  prometheusScrapePath: /actuator/prometheus
+  jobLabel: app
+
+keycloak:
+  realms:
+    officer: officer-portal
+    citizen: citizen-portal
+    admin: admin
+  certificatesEndpoint: /protocol/openid-connect/certs
+
+Role:
+  type: Role
+  name: form-schema-provider-role
+RoleBinding:
+  type: RoleBinding
+  name: form-schema-provider-role
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: form-schema-provider
+
+service:
+  port: 8080
+
+redis:
+  secretName: redis-auth
+
+ingress:
+  required: true
+  site: form-schema-provider

@@ -1,0 +1,12 @@
+{
+  "type": "form",
+  "type": "form",
+  "display": "form",
+  "title": "Додати інформацію про лабор",
+  "title": "Додати інформацію про лабораторію",
+  "name": "add-lab-bp-add-lab",
+  "name": "add-lab-b",
+  "path": "add-lab-bp-add-lab",
+  "path": "add-lab-bp-add-lab",
+  "submissionAccess": []
+}
