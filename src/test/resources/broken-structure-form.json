@@ -1,0 +1,533 @@
+{
+  "type": "form"
+  "components": [
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "inputType": "text",
+      "inputMask": "",
+      "label": "Повна назва лабораторії або ПІБ ФОП",
+      "key": "name",
+      "placeholder": "Введіть повну назву лабораторії",
+      "prefix": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": "",
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "spellcheck": true,
+      "validate": {
+        "required": true,
+        "minLength": "",
+        "maxLength": "",
+        "pattern": "",
+        "custom": "",
+        "customPrivate": false
+      },
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "type": "textfield",
+      "labelPosition": "top",
+      "inputFormat": "plain",
+      "tags": [],
+      "properties": {},
+      "lockKey": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "inputType": "text",
+      "inputMask": "",
+      "label": "Код ЄДРПОУ або РНОКПП",
+      "key": "edrpou",
+      "placeholder": "Введіть код ЄДРПОУ або РНОКПП",
+      "prefix": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": "",
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "spellcheck": true,
+      "validate": {
+        "required": true,
+        "minLength": 8,
+        "maxLength": 10,
+        "pattern": "\\d{8,10}",
+        "custom": "",
+        "customPrivate": false,
+        "customMessage": "Введіть від 8 до 10 цифр коду"
+      },
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "type": "textfield",
+      "labelPosition": "top",
+      "inputFormat": "plain",
+      "tags": [],
+      "properties": {},
+      "lockKey": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "label": "Область",
+      "key": "oblast",
+      "placeholder": "",
+      "data": {
+        "values": [],
+        "json": "",
+        "url": "/officer/api/data-factory/koatuu-obl-contains-name",
+        "resource": "",
+        "custom": "",
+        "headers": [
+          {
+            "value": "",
+            "key": ""
+          }
+        ]
+      },
+      "dataSrc": "url",
+      "valueProperty": "code",
+      "defaultValue": "",
+      "refreshOn": "",
+      "filter": "",
+      "authenticate": false,
+      "template": "<span>{{ item.name }}</span>",
+      "multiple": false,
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "validate": {
+        "required": true
+      },
+      "type": "select",
+      "labelPosition": "top",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "properties": {},
+      "lockKey": true,
+      "searchField": "name",
+      "selectValues": "",
+      "clearOnRefresh": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "label": "Назва населеного пункту",
+      "key": "koatuu",
+      "placeholder": "",
+      "data": {
+        "values": [],
+        "json": "",
+        "url": "/officer/api/data-factory/koatuu-np-starts-with-name-by-obl",
+        "resource": "",
+        "custom": "",
+        "headers": [
+          {
+            "value": "",
+            "key": ""
+          }
+        ]
+      },
+      "dataSrc": "url",
+      "valueProperty": "koatuuId",
+      "defaultValue": "",
+      "refreshOn": "oblast",
+      "filter": "level1={{data.oblast.code}}",
+      "authenticate": false,
+      "template": "<span>{{ item.name }}</span>",
+      "multiple": false,
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "validate": {
+        "required": true
+      },
+      "type": "select",
+      "labelPosition": "top",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "properties": {},
+      "lockKey": true,
+      "selectValues": "",
+      "searchField": "name",
+      "clearOnRefresh": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "inputType": "text",
+      "inputMask": "",
+      "label": "Адреса",
+      "key": "address",
+      "placeholder": "Введіть адресу",
+      "prefix": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": "",
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "spellcheck": true,
+      "validate": {
+        "required": true,
+        "minLength": "",
+        "maxLength": "",
+        "pattern": "",
+        "custom": "",
+        "customPrivate": false
+      },
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "type": "textfield",
+      "labelPosition": "top",
+      "inputFormat": "plain",
+      "tags": [],
+      "properties": {},
+      "lockKey": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "inputType": "text",
+      "inputMask": "",
+      "label": "Телефон",
+      "key": "phoneNumber",
+      "placeholder": "",
+      "prefix": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": "",
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "spellcheck": true,
+      "validate": {
+        "required": true,
+        "minLength": null,
+        "maxLength": "",
+        "pattern": "",
+        "custom": "",
+        "customPrivate": false,
+        "customMessage": "Поле обов'язкове"
+      },
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "type": "textfield",
+      "labelPosition": "top",
+      "inputFormat": "plain",
+      "tags": [
+      ],
+      "properties": {
+      }
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "inputType": "text",
+      "inputMask": "",
+      "label": "Керівник",
+      "key": "headName",
+      "placeholder": "",
+      "prefix": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": "",
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "spellcheck": true,
+      "validate": {
+        "required": true,
+        "minLength": "",
+        "maxLength": "",
+        "pattern": "",
+        "custom": "",
+        "customPrivate": false
+      },
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "type": "textfield",
+      "labelPosition": "top",
+      "inputFormat": "plain",
+      "tags": [],
+      "properties": {},
+      "lockKey": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "label": "Форма власності",
+      "key": "ownership",
+      "placeholder": "",
+      "data": {
+        "values": [],
+        "json": "",
+        "url": "/officer/api/data-factory/ownership-contains-name",
+        "resource": "",
+        "custom": "",
+        "headers": [
+          {
+            "value": "",
+            "key": ""
+          }
+        ]
+      },
+      "dataSrc": "url",
+      "valueProperty": "ownershipId",
+      "defaultValue": "",
+      "refreshOn": "",
+      "filter": "",
+      "authenticate": false,
+      "template": "<span>{{ item.name }}</span>",
+      "multiple": false,
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "validate": {
+        "required": true
+      },
+      "type": "select",
+      "labelPosition": "top",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "properties": {},
+      "lockKey": true,
+      "searchField": "name",
+      "clearOnRefresh": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "label": "Організаційно-правова форма",
+      "key": "kopfg",
+      "placeholder": "",
+      "data": {
+        "values": [],
+        "json": "",
+        "url": "/officer/api/data-factory/kopfg-contains-name",
+        "resource": "",
+        "custom": "",
+        "headers": [
+          {
+            "value": "",
+            "key": ""
+          }
+        ]
+      },
+      "dataSrc": "url",
+      "valueProperty": "kopfgId",
+      "defaultValue": "",
+      "refreshOn": "",
+      "filter": "",
+      "authenticate": false,
+      "template": "<span>{{ item.name }}</span>",
+      "multiple": false,
+      "protected": false,
+      "unique": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "validate": {
+        "required": true
+      },
+      "type": "select",
+      "labelPosition": "top",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "properties": {},
+      "lockKey": true,
+      "searchField": "name",
+      "clearOnRefresh": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "inputType": "checkbox",
+      "tableView": true,
+      "label": "Наявність акредитації",
+      "dataGridLabel": false,
+      "key": "accreditationFlag",
+      "defaultValue": false,
+      "protected": false,
+      "persistent": true,
+      "hidden": false,
+      "name": "",
+      "value": "",
+      "clearOnHide": true,
+      "validate": {
+        "required": false
+      },
+      "type": "checkbox",
+      "labelPosition": "right",
+      "hideLabel": false,
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "properties": {},
+      "lockKey": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "label": "Дата закінчення дії акредитації",
+      "key": "accreditationEndDate",
+      "fields": {
+        "day": {
+          "type": "number",
+          "placeholder": "",
+          "required": false
+        },
+        "month": {
+          "type": "select",
+          "placeholder": "",
+          "required": false
+        },
+        "year": {
+          "type": "number",
+          "placeholder": "",
+          "required": false
+        }
+      },
+      "dayFirst": false,
+      "protected": false,
+      "persistent": true,
+      "hidden": false,
+      "clearOnHide": true,
+      "validate": {
+        "custom": "  \r\nconst empty = !input || input === '00/00/0000';\r\nvalid = empty;\r\n\r\nif (!empty) {\r\n    valid = !input.split('/').find(part => part === '00' || part === '0000')\r\n}",
+        "customMessage": "Заповніть поле"
+      },
+      "type": "day",
+      "labelPosition": "top",
+      "inputsLabelPosition": "top",
+      "tags": [],
+      "conditional": {
+        "show": "true",
+        "when": "accreditationFlag",
+        "eq": "true"
+      },
+      "properties": {},
+      "lockKey": true,
+      "useLocaleSettings": false
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "tableView": true,
+      "label": "Примітки",
+      "key": "notes",
+      "placeholder": "",
+      "prefix": "",
+      "suffix": "",
+      "rows": 3,
+      "multiple": false,
+      "defaultValue": "",
+      "protected": false,
+      "persistent": true,
+      "hidden": false,
+      "wysiwyg": false,
+      "clearOnHide": true,
+      "spellcheck": true,
+      "validate": {
+        "required": false,
+        "minLength": "",
+        "maxLength": "",
+        "pattern": "",
+        "custom": ""
+      },
+      "type": "textarea",
+      "labelPosition": "top",
+      "inputFormat": "plain",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "properties": {},
+      "lockKey": true
+    },
+    {
+      "autofocus": false,
+      "input": true,
+      "label": "Далі",
+      "tableView": false,
+      "key": "submit",
+      "size": "md",
+      "leftIcon": "",
+      "rightIcon": "",
+      "block": false,
+      "action": "submit",
+      "disableOnInvalid": false,
+      "theme": "primary",
+      "type": "button"
+    }
+  ],
+  "display": "form",
+  "title": "Додати інформацію про лабораторію",
+  "name": "add-lab-bp-add-lab",
+  "path": "add-lab-bp-add-lab",
+  "machineName": "add-lab-bp-add-lab"
+}
