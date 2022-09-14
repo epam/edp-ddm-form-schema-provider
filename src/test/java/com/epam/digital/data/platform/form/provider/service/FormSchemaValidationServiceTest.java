@@ -100,20 +100,6 @@ class FormSchemaValidationServiceTest {
         .isEqualTo("Error during form schema validation: schema is not valid");
   }
 
-  @Test
-  void shouldBeValidationErrorsOnNotEqualNameAndPathProperties() {
-    var expectedErrors = Map.of("path", ValidationError.builder()
-        .path("path")
-        .massage("The 'path' must be equal to the 'name'")
-        .build());
-    var formData = TestUtils.getContent("not-equal-name-and-path-properties-form.json");
-
-    var validationErrors = formSchemaValidationService.validate(formData);
-
-    assertThat(validationErrors, is(IsMapWithSize.aMapWithSize(1)));
-    assertEquals(expectedErrors, validationErrors);
-  }
-
   @SneakyThrows
   public JsonSchema testJsonSchema() {
     var resource = resourceLoader.getResource(FORMS_JSON_SCHEMA);

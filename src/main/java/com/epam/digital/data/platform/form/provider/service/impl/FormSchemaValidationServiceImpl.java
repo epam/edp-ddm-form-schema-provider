@@ -27,7 +27,6 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +37,6 @@ import org.springframework.stereotype.Service;
 public class FormSchemaValidationServiceImpl implements FormSchemaValidationService {
 
   private static final int PROPERTY_PATH_INDEX = 0;
-  private static final String NAME = "name";
-  private static final String PATH = "path";
 
   private final JsonSchema schema;
   private final ObjectMapper objectMapper;
@@ -57,10 +54,6 @@ public class FormSchemaValidationServiceImpl implements FormSchemaValidationServ
 
       validationErrorMap.putAll(validateDuplications(formSchemaData));
 
-      if (validationErrorMap.isEmpty()) {
-        validationErrorMap.putAll(validateSchemaValues(jsonNode));
-      }
-
       return validationErrorMap;
     } catch (JsonProcessingException e) {
       throw new FormSchemaValidationException(
@@ -68,17 +61,6 @@ public class FormSchemaValidationServiceImpl implements FormSchemaValidationServ
     }
   }
 
-  private Map<String, ValidationError> validateSchemaValues(JsonNode jsonNode) {
-    Map<String, ValidationError> validationErrorMap = new HashMap<>();
-    if (!Objects.equals(jsonNode.get(NAME), jsonNode.get(PATH))) {
-      validationErrorMap.put(PATH, ValidationError.builder()
-          .path(PATH)
-          .massage("The 'path' must be equal to the 'name'")
-          .build());
-    }
-
-    return validationErrorMap;
-  }
 
   private Map<String, ValidationError> validateSchemaStructure(JsonNode jsonNode) {
     var validationMessages = schema.validate(jsonNode);
