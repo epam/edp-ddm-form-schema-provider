@@ -9,6 +9,8 @@ port: 8080
 appConfigMountPath: "/app/config"
 redisSecretsMountPath: "/app/secrets/redis"
 
+deployProfile: prod
+
 probes:
   liveness:
     path: /actuator/health/liveness

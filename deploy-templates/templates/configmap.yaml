@@ -5,3 +5,8 @@ metadata:
 data:
   application.yml: |-
     server.max-http-header-size: 32KB
+    {{- if eq .Values.deployProfile "dev" }}
+    management.endpoints.web.exposure.include: '*'
+    {{- else }}
+    management.endpoints.web.exposure.include: 'health, prometheus'
+    {{- end }}
