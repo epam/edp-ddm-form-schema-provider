@@ -51,7 +51,7 @@ class FormSchemaProviderControllerTest {
   @Test
   @SneakyThrows
   void saveForm() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json"));
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form.json"));
 
     mockMvc.perform(post(BASE_URL)
             .content(form.toJSONString())
@@ -64,7 +64,7 @@ class FormSchemaProviderControllerTest {
   @Test
   @SneakyThrows
   void getForm() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json").getBytes(
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form.json").getBytes(
         StandardCharsets.UTF_8));
     when(formSchemaProviderService.getFormByKey(any())).thenReturn(form);
 
@@ -78,7 +78,7 @@ class FormSchemaProviderControllerTest {
   @Test
   @SneakyThrows
   void updateForm() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json").getBytes(
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form.json").getBytes(
         StandardCharsets.UTF_8));
     when(formSchemaProviderService.getFormByKey(any())).thenReturn(form);
 

@@ -26,6 +26,9 @@ import com.epam.digital.data.platform.form.provider.service.impl.FormSchemaProvi
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import util.TestUtils;
@@ -40,6 +44,7 @@ import util.TestUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -55,24 +60,27 @@ class FormSchemaProviderServiceTest {
   @Mock
   FormSchemaValidationService formSchemaValidationService;
 
+  ObjectMapper objectMapper = new ObjectMapper();
+
   FormSchemaProviderService formSchemaProviderService;
 
   @BeforeEach
   void init() {
-    this.formSchemaProviderService = new FormSchemaProviderServiceImpl(repository,
-        formSchemaValidationService);
+    this.formSchemaProviderService =
+        new FormSchemaProviderServiceImpl(formSchemaValidationService, repository, objectMapper);
   }
 
   @Test
-  void validSaveForm() {
-    var form = TestUtils.getContent("valid-from.json");
-    var formSchema = FormSchema.builder()
-        .id(JSONValue.parse(form, JSONObject.class).getAsString("name"))
-        .formData(form).build();
+  void validSaveForm() throws JsonProcessingException {
+    var form = TestUtils.getContent("valid-form-put.json");
 
     formSchemaProviderService.saveForm(form);
 
-    verify(repository).save(formSchema);
+    var captor = ArgumentCaptor.forClass(FormSchema.class);
+    verify(repository).save(captor.capture());
+    assertThat(captor.getValue().getId()).isEqualTo("citizen-shared-officer-sign-app");
+    assertThat(objectMapper.readTree(captor.getValue().getFormData()))
+        .isEqualTo(objectMapper.readTree(TestUtils.getContent("valid-form.json")));
   }
 
   @Test
@@ -93,7 +101,7 @@ class FormSchemaProviderServiceTest {
 
   @Test
   void saveShouldThrowFormDataRepositoryCommunicationException() {
-    var form = TestUtils.getContent("valid-from.json");
+    var form = TestUtils.getContent("valid-form.json");
     when(repository.save(any())).thenThrow(new RuntimeException());
 
     var exception = assertThrows(FormDataRepositoryCommunicationException.class,
@@ -103,7 +111,7 @@ class FormSchemaProviderServiceTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"valid-from.json", "valid-form-with-special-characters.json"})
+  @ValueSource(strings = {"valid-form.json", "valid-form-with-special-characters.json"})
   void validGetFormByKey(String filePath) {
     var form = (JSONObject) JSONValue.parse(TestUtils.getContent(filePath));
     String formName = form.getAsString("name");
@@ -130,30 +138,31 @@ class FormSchemaProviderServiceTest {
 
   @Test
   void getFormByKeyShouldThrowFormDataRepositoryCommunicationException() {
-    when(repository.findById(any())).thenThrow(new RuntimeException());
+    when(repository.findById("key")).thenThrow(new RuntimeException());
 
     var exception = assertThrows(FormDataRepositoryCommunicationException.class,
-        () -> formSchemaProviderService.getFormByKey(any()));
+        () -> formSchemaProviderService.getFormByKey("KEY"));
 
     assertThat(exception.getMessage()).isEqualTo("Error during storage invocation");
   }
 
   @Test
-  void validUpdateForm() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json"));
-    String formName = form.getAsString("name");
-    var formSchema = FormSchema.builder().id(formName)
-        .formData(form.toJSONString()).build();
-    when(repository.existsById(formName)).thenReturn(true);
+  void validUpdateForm() throws JsonProcessingException {
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form-put.json"));
+    when(repository.existsById("citizen-shared-officer-sign-app")).thenReturn(true);
 
-    formSchemaProviderService.updateForm(formName, form.toJSONString());
+    formSchemaProviderService.updateForm("CITIZEN-SHARED-OFFICER-SIGN-APP", form.toJSONString());
 
-    verify(repository).save(formSchema);
+    var captor = ArgumentCaptor.forClass(FormSchema.class);
+    verify(repository).save(captor.capture());
+    assertThat(captor.getValue().getId()).isEqualTo("citizen-shared-officer-sign-app");
+    assertThat(objectMapper.readTree(captor.getValue().getFormData()))
+            .isEqualTo(objectMapper.readTree(TestUtils.getContent("valid-form.json")));
   }
 
   @Test
   void updateFormShouldThrowNoFormDataException() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json"));
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form.json"));
     String formName = form.getAsString("name");
 
     var exception = assertThrows(FormSchemaDataException.class,
@@ -165,10 +174,9 @@ class FormSchemaProviderServiceTest {
 
   @Test
   void updateFormShouldThrowFormSchemaValidationExceptionWhenKeysDifferent() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json"));
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form.json"));
     String formName = "another-name";
     when(formSchemaValidationService.validate(any())).thenReturn(Collections.emptyMap());
-    when(repository.existsById(any())).thenReturn(true);
 
     var exception = assertThrows(FormSchemaValidationException.class,
         () -> formSchemaProviderService.updateForm(formName, form.toJSONString()));
@@ -181,7 +189,7 @@ class FormSchemaProviderServiceTest {
 
   @Test
   void shouldBeValidationErrorsWhenEntityExists() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json"));
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form.json"));
     when(formSchemaValidationService.validate(any())).thenReturn(Collections.emptyMap());
     when(repository.existsById(any())).thenReturn(true);
 
@@ -202,10 +210,10 @@ class FormSchemaProviderServiceTest {
 
   @Test
   void deleteFormByKeyShouldThrowFormDataRepositoryCommunicationException() {
-    doThrow(new RuntimeException()).when(repository).deleteById(any());
+    doThrow(new RuntimeException()).when(repository).deleteById("key");
 
     var exception = assertThrows(FormDataRepositoryCommunicationException.class,
-        () -> formSchemaProviderService.deleteFormByKey(any()));
+        () -> formSchemaProviderService.deleteFormByKey("KEY"));
 
     assertThat(exception.getMessage()).isEqualTo("Error during storage invocation");
   }

@@ -60,7 +60,7 @@ class ApplicationExceptionHandlerTest {
   @Test
   @SneakyThrows
   void shouldReturnRuntimeErrorOnGenericException() {
-    var form = TestUtils.getContent("valid-from.json");
+    var form = TestUtils.getContent("valid-form.json");
     doThrow(RuntimeException.class).when(formSchemaProviderService).saveForm(form);
 
     mockMvc.perform(post(BASE_URL)
@@ -114,7 +114,7 @@ class ApplicationExceptionHandlerTest {
   @Test
   @SneakyThrows
   void shouldReturnFormSchemaValidationException() {
-    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-from.json"));
+    var form = (JSONObject) JSONValue.parse(TestUtils.getContent("valid-form.json"));
     doThrow(FormSchemaValidationException.class).when(formSchemaProviderService).saveForm(any());
 
     mockMvc.perform(post(BASE_URL)

@@ -30,6 +30,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -44,40 +48,60 @@ public class FormSchemaProviderServiceImpl implements FormSchemaProviderService 
 
   private final FormSchemaValidationService formSchemaValidationService;
   private final FormRepository repository;
+  private final ObjectMapper objectMapper;
 
-
-  public FormSchemaProviderServiceImpl(FormRepository repository,
-      FormSchemaValidationService formSchemaValidationService) {
+  public FormSchemaProviderServiceImpl(
+      FormSchemaValidationService formSchemaValidationService,
+      FormRepository repository,
+      ObjectMapper objectMapper) {
     this.formSchemaValidationService = formSchemaValidationService;
     this.repository = repository;
+    this.objectMapper = objectMapper;
   }
 
   @Override
   public void saveForm(String formSchemaData) {
-    var formSchemaName = retrieveFormSchemaName(formSchemaData, this::checkForSaveIsFormExists);
+    validateFormSchema(formSchemaData);
+    JsonNode formSchemaJson = getFormJson(formSchemaData);
 
-    saveOrUpdate(formSchemaName, formSchemaData);
+    var lowercaseName = formSchemaJson.get(NAME).asText().toLowerCase();
+    ((ObjectNode) formSchemaJson).put(NAME, lowercaseName);
+
+    validateFormExisting(formSchemaJson.get(NAME).asText(), this::checkForSaveIsFormExists);
+
+    saveOrUpdate(formSchemaJson.get(NAME).asText(), formSchemaJson);
+  }
+
+  private JsonNode getFormJson(String formSchemaData) {
+    try {
+      return objectMapper.readTree(formSchemaData);
+    } catch (Exception e) {
+      throw new FormSchemaDataException("Error while json parsing", e);
+    }
+  }
+
+  private String serializeFormJson(JsonNode formSchemaJson) {
+    try {
+      return objectMapper.writeValueAsString(formSchemaJson);
+    } catch (Exception e) {
+      throw new FormSchemaDataException("Error while json serializing", e);
+    }
   }
 
 
-  private void saveOrUpdate(String formSchemaName, String formSchemaData) {
+  private void saveOrUpdate(String formSchemaName, JsonNode formSchemaJson) {
     execute(() -> repository.save(FormSchema.builder()
         .id(formSchemaName)
-        .formData(formSchemaData)
+        .formData(serializeFormJson(formSchemaJson))
         .build()));
   }
 
-  private String retrieveFormSchemaName(String formSchemaData,
-      BiConsumer<Boolean, String> performIfFormExist) {
-    validateFormSchema(formSchemaData);
+  private void validateFormExisting(String formName,
+                                      BiConsumer<Boolean, String> performIfFormExist) {
 
-    var schemaFormName = getSchemaFormKey(formSchemaData);
+    boolean isExists = isExistsByKey(formName);
 
-    boolean isExists = isExistsByKey(schemaFormName);
-
-    performIfFormExist.accept(isExists, schemaFormName);
-
-    return schemaFormName;
+    performIfFormExist.accept(isExists, formName);
   }
 
   private void validateFormSchema(String formSchemaData) {
@@ -90,13 +114,10 @@ public class FormSchemaProviderServiceImpl implements FormSchemaProviderService 
     }
   }
 
-  private String getSchemaFormKey(String formSchemaData) {
-    return JSONValue.parse(formSchemaData, JSONObject.class).getAsString(NAME);
-  }
-
   @Override
   public JSONObject getFormByKey(String key) {
-    Optional<FormSchema> formSchema = execute(() -> repository.findById(key));
+    var lowercaseKey = key.toLowerCase();
+    Optional<FormSchema> formSchema = execute(() -> repository.findById(lowercaseKey));
 
     var schema = formSchema.orElseThrow(() ->
         new FormSchemaDataException(
@@ -109,9 +130,15 @@ public class FormSchemaProviderServiceImpl implements FormSchemaProviderService 
 
   @Override
   public void updateForm(String key, String formSchemaData) {
-    var formSchemaName = retrieveFormSchemaName(formSchemaData, this::checkForUpdateIsFromExists);
+    validateFormSchema(formSchemaData);
+    JsonNode formSchemaJson = getFormJson(formSchemaData);
 
-    if (!StringUtils.equals(key, formSchemaName)) {
+    var lowercaseName = formSchemaJson.get(NAME).asText().toLowerCase();
+    ((ObjectNode) formSchemaJson).put(NAME, lowercaseName);
+
+    var formSchemaName = formSchemaJson.get(NAME).asText();
+
+    if (!StringUtils.equalsIgnoreCase(key, formSchemaName)) {
       var errorMessage = String.format(
           "The 'key: %s' from request must be equal to the 'name: %s' from the form data.", key,
           formSchemaName);
@@ -122,7 +149,8 @@ public class FormSchemaProviderServiceImpl implements FormSchemaProviderService 
               .build()));
     }
 
-    saveOrUpdate(formSchemaName, formSchemaData);
+    validateFormExisting(formSchemaName, this::checkForUpdateIsFromExists);
+    saveOrUpdate(formSchemaName, formSchemaJson);
   }
 
   private void checkForUpdateIsFromExists(boolean isExists, String key) {
@@ -150,7 +178,8 @@ public class FormSchemaProviderServiceImpl implements FormSchemaProviderService 
   @Override
   public void deleteFormByKey(String key) {
     try {
-      repository.deleteById(key);
+      var lowercaseKey = key.toLowerCase();
+      repository.deleteById(lowercaseKey);
     } catch (Exception e) {
       throw new FormDataRepositoryCommunicationException("Error during storage invocation", e);
     }

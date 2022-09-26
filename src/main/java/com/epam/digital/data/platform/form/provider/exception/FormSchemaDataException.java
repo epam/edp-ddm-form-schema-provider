@@ -22,4 +22,8 @@ public class FormSchemaDataException extends RuntimeException {
   public FormSchemaDataException(String message) {
     super(message);
   }
+
+  public FormSchemaDataException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
