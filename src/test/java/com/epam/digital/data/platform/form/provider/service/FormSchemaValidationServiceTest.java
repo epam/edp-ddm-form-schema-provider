@@ -58,7 +58,7 @@ class FormSchemaValidationServiceTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"valid-from.json", "valid-form-with-special-characters.json"})
+  @ValueSource(strings = {"valid-form.json", "valid-form-with-special-characters.json"})
   void shouldNotHaveErrors(String path) {
     var formData = TestUtils.getContent(path);
 
@@ -78,9 +78,9 @@ class FormSchemaValidationServiceTest {
 
   @Test
   void shouldBeValidationErrorsOnMissedRequiredProperties() {
-    var expectedErrors = Map.of("type", ValidationError.builder()
-        .path("type")
-        .massage("$.type: is missing but it is required").build());
+    var expectedErrors = Map.of("name", ValidationError.builder()
+        .path("name")
+        .massage("$.name: is missing but it is required").build());
     var formData = TestUtils.getContent("missed-required-properties-form.json");
 
     var validationErrors = formSchemaValidationService.validate(formData);
