@@ -8,8 +8,10 @@ void call() {
 
     String stages = '%5B%7B%22stages%22%3A%20%5B%7B%22name%22%3A%20%22checkout%22%7D%2C%7B%22name%22%3A%20%22init-registry%22%7D%2C%7B%22name%22%3A%20%22get-changes%22%7D%2C%7B%22name%22%3A%20%22registry-regulations-validation%22%7D%2C%7B%22name%22%3A%20%22shutdown-services%22%7D%2C%7B%22name%22%3A%20%22create-backup%22%7D%2C%7B%22name%22%3A%20%22upload-form-changes%22%7D%5D%7D%5D'
 
+    String DEPLOYMENT_MODE = sh(script: "helm get values registry-configuration -n $NAMESPACE | grep 'deploymentMode: ' | awk '{print \$2}'", returnStdout: true).trim()
+
     sh "curl -XPOST \"${JENKINS_URL_WITH_CREDS}/job/registry-regulations/job/MASTER-Build-registry-regulations/buildWithParameters?" +
-            "FULL_DEPLOY=true&STAGES=${stages}\""
+            "FULL_DEPLOY=true&STAGES=${stages}&DEPLOYMENT_MODE=$DEPLOYMENT_MODE\""
 }
 
 return this;
