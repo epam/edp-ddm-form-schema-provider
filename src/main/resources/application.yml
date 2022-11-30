@@ -45,7 +45,7 @@ management:
         liveness:
           include: livenessState, livenessResponseCheck
         readiness:
-          include: readinessState
+          include: readinessState, redis
     loggers:
       enabled: true
     prometheus:
