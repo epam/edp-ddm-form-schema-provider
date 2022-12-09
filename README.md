@@ -16,4 +16,6 @@ Check `src/main/resources/application-local.yaml` and replace if needed:
 3. Run application with your favourite IDE or via `java -jar ...` with jar file, created above
 
 ### License
-form-schema-provider is Open Source software released under the Apache 2.0 license.
+
+The form-schema-provider is Open Source software released under
+the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0).
