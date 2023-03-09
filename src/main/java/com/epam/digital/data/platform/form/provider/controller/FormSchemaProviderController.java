@@ -17,7 +17,6 @@
 package com.epam.digital.data.platform.form.provider.controller;
 
 import com.epam.digital.data.platform.form.provider.service.impl.FormSchemaProviderServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/forms")
 public class FormSchemaProviderController {
@@ -44,14 +42,12 @@ public class FormSchemaProviderController {
 
   @PostMapping
   public ResponseEntity<Void> saveForm(@RequestBody String formData) {
-    log.info("saveForm called");
     formSchemaProviderServiceImpl.saveForm(formData);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @GetMapping("/{key}")
   public ResponseEntity<JSONObject> getForm(@PathVariable("key") String key) {
-    log.info("getForm called");
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
         .body(formSchemaProviderServiceImpl.getFormByKey(key));
@@ -60,14 +56,12 @@ public class FormSchemaProviderController {
   @PutMapping("/{key}")
   public ResponseEntity<Void> updateForm(@PathVariable("key") String key,
       @RequestBody String formSchemaData) {
-    log.info("updateForm called");
     formSchemaProviderServiceImpl.updateForm(key, formSchemaData);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   @DeleteMapping("/{key}")
   public ResponseEntity<Void> deleteFormByKey(@PathVariable("key") String key) {
-    log.info("deleteFormByKey called");
     formSchemaProviderServiceImpl.deleteFormByKey(key);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }

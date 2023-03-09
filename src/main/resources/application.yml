@@ -79,6 +79,23 @@ platform:
       - /v3/api-docs/**
       - /swagger-ui/**
       - /actuator/**
+  logging:
+    aspect:
+      enabled: false
 validator:
   schema:
     location: "classpath:schema/forms-schema.json"
+
+logbook:
+  info-logging:
+    enabled: true
+  strategy: without-body
+  exclude:
+    - /v3/api-docs/**
+    - /swagger-ui/**
+    - /actuator/**
+    - /swagger
+  obfuscate:
+    headers:
+      - x-access-token
+      - cookie

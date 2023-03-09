@@ -67,9 +67,11 @@ public class FormSchemaProviderServiceImpl implements FormSchemaProviderService 
     var lowercaseName = formSchemaJson.get(NAME).asText().toLowerCase();
     ((ObjectNode) formSchemaJson).put(NAME, lowercaseName);
 
-    validateFormExisting(formSchemaJson.get(NAME).asText(), this::checkForSaveIsFormExists);
+    var formName = formSchemaJson.get(NAME).asText();
+    validateFormExisting(formName, this::checkForSaveIsFormExists);
 
-    saveOrUpdate(formSchemaJson.get(NAME).asText(), formSchemaJson);
+    log.debug("Saving form with name: {}", formName);
+    saveOrUpdate(formName, formSchemaJson);
   }
 
   private JsonNode getFormJson(String formSchemaData) {
