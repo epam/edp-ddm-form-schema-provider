@@ -15,7 +15,7 @@
         <ddm.starter.logger.version>1.6.0.1</ddm.starter.logger.version>
         <ddm.starter.swagger.version>1.6.0.1</ddm.starter.swagger.version>
         <ddm.starter.actuator.version>1.6.0.1</ddm.starter.actuator.version>
-        <ddm.starter.security.version>1.6.0.1</ddm.starter.security.version>
+        <ddm.starter.security.version>1.6.0.13</ddm.starter.security.version>
 
         <log4j.version>2.18.0</log4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
