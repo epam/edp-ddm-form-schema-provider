@@ -15,16 +15,16 @@
         <ddm.starter.logger.version>1.6.0.1</ddm.starter.logger.version>
         <ddm.starter.swagger.version>1.6.0.1</ddm.starter.swagger.version>
         <ddm.starter.actuator.version>1.6.0.1</ddm.starter.actuator.version>
-        <ddm.starter.security.version>1.6.0.13</ddm.starter.security.version>
+        <ddm.starter.security.version>1.6.0.16</ddm.starter.security.version>
 
         <log4j.version>2.18.0</log4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
 
-        <spring.boot.version>2.6.13</spring.boot.version>
+        <spring.boot.version>2.7.11</spring.boot.version>
         <spring-boot-maven-plugin.version>2.7.5</spring-boot-maven-plugin.version>
-        <spring.cloud.version>2021.0.0</spring.cloud.version>
+        <spring.cloud.version>2021.0.7</spring.cloud.version>
         <junit.jupiter.version>5.6.2</junit.jupiter.version>
 
         <spring-data-redis.version>2.7.0</spring-data-redis.version>
