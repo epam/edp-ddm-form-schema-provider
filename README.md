@@ -15,6 +15,12 @@ Check `src/main/resources/application-local.yaml` and replace if needed:
 2. Add `--spring.profiles.active=local` to application run arguments
 3. Run application with your favourite IDE or via `java -jar ...` with jar file, created above
 
+
+### Test execution
+
+* Tests could be run via maven command:
+    * `mvn verify` OR using appropriate functions of your IDE. To avoid `The filename or extension is too long` error on Windows, please uncomment `<fork>false</fork>` in `spring-boot-maven-plugin` configuration.
+
 ### License
 
 The form-schema-provider is Open Source software released under

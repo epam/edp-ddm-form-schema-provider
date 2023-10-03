@@ -1,0 +1,9 @@
+spring:
+  zipkin:
+    enabled: false
+server:
+  port: 7070
+platform:
+  security:
+    whitelist:
+      - /v3/api-docs.yaml

@@ -1,3 +1,27 @@
+global:
+  container:
+    requestsLimitsEnabled: true
+  istio:
+    sidecar:
+      requestsLimitsEnabled: true
+      resources:
+        requests: {}
+        limits: {}
+  registry:
+    formSchemaProvider:
+      container:
+        envVars: {}
+        resources:
+          requests: {}
+          limits: {}
+      istio:
+        sidecar:
+          enabled: true
+          resources:
+            requests: {}
+            limits: {}
+      replicas: 1
+
 name: form-schema-provider
 
 image:

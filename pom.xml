@@ -31,6 +31,7 @@
         <lettuce.version>6.1.8.RELEASE</lettuce.version>
 
         <json-schema-validator.version>1.0.57</json-schema-validator.version>
+        <springdoc.openapi.ui.version>1.6.9</springdoc.openapi.ui.version>
 
         <sonar.coverage.exclusions>
             <!-- do not calc coverage for the classes without BL: -->
@@ -77,11 +78,6 @@
             <groupId>com.epam.digital.data.platform</groupId>
             <artifactId>ddm-starter-actuator</artifactId>
             <version>${ddm.starter.actuator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.epam.digital.data.platform</groupId>
-            <artifactId>ddm-starter-swagger</artifactId>
-            <version>${ddm.starter.swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>com.epam.digital.data.platform</groupId>
@@ -172,41 +168,125 @@
             <artifactId>json-schema-validator</artifactId>
             <version>${json-schema-validator.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.openapi.ui.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
-                <configuration>
-                    <includes>
-                        <include>**/*IT.java</include>
-                        <include>**/*Test.java</include>
-                    </includes>
-                </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/it/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-test-resource</id>
+                        <goals>
+                            <goal>add-test-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/it/resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot-maven-plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <!-- <fork>false</fork> Fixes Windows issue: The filename or extension is too long-->
+                            <useTestClasspath>true</useTestClasspath>
+                            <directories>${project.build.testOutputDirectory}</directories>
+                            <mainClass>com.epam.digital.data.platform.form.provider.TestApp</mainClass>
+                            <jvmArguments>
+                                -Dspring.profiles.active=test
+                            </jvmArguments>
+                            <wait>1000</wait>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <apiDocsUrl>http://localhost:7070/v3/api-docs.yaml</apiDocsUrl>
+                            <outputFileName>swagger.yml</outputFileName>
+                            <outputDir>openapi</outputDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.cyclonedx</groupId>
@@ -224,6 +304,6 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
+         </plugins>
     </build>
 </project>
