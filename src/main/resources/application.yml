@@ -22,6 +22,7 @@ spring:
       fail-on-missing-creator-properties: true
       fail-on-null-creator-properties: true
   redis:
+    username: ${REDIS_USERNAME}
     password: ${REDIS_PASSWORD}
     sentinel:
       master: mymaster

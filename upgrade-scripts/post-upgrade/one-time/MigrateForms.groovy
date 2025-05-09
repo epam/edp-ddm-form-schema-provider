@@ -11,7 +11,7 @@ void call() {
 
     String DEPLOYMENT_MODE = sh(script: "helm get values registry-configuration -n $NAMESPACE | grep 'deploymentMode: ' | awk '{print \$2}'", returnStdout: true).trim()
 
-    sh "curl -XPOST \"${JENKINS_URL_WITH_CREDS}/job/registry-regulations/job/MASTER-Build-registry-regulations/buildWithParameters?" +
+    sh "set +x; curl -XPOST \"${JENKINS_URL_WITH_CREDS}/job/registry-regulations/job/MASTER-Build-registry-regulations/buildWithParameters?" +
             "FULL_DEPLOY=true&STAGES=${stages}&DEPLOYMENT_MODE=$DEPLOYMENT_MODE\""
 }
 

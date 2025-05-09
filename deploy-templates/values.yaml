@@ -31,7 +31,6 @@ image:
 port: 8080
 
 appConfigMountPath: "/app/config"
-redisSecretsMountPath: "/app/secrets/redis"
 
 deployProfile: prod
 
@@ -69,7 +68,7 @@ service:
   port: 8080
 
 redis:
-  secretName: redis-auth
+  secretName: redis-form-schema-provider-user-secret
 
 ingress:
   required: true
